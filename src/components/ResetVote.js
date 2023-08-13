@@ -88,25 +88,6 @@ export const ResetVote = (props) => {
   }, [candidates, isValidAddress]);
 
   const handleResetVote = async () => {
-    if (
-      newStartAmt === "" ||
-      newMaxVotes === "" ||
-      candidates.some((candidate) => candidate === "")
-    ) {
-      setWarningMessage("Lütfen bütün değerleri giriniz");
-      setTimeout(() => setWarningMessage(""), 3000);
-      return;
-    }
-
-    // Adreslerin geçerli olup olmadığını kontrol edin
-    if (candidates.some((candidate) => !isValidAddress(candidate))) {
-      setWarningMessage(
-        "Lütfen Ethereum adresini doğru şekilde girip bir daha deneyiniz"
-      );
-      setTimeout(() => setWarningMessage(""), 3000);
-      return;
-    }
-
     if (!props.wallet) {
       setWarningMessage("Please connect your wallet");
       setTimeout(() => setWarningMessage(""), 3000);
@@ -119,8 +100,27 @@ export const ResetVote = (props) => {
       return;
     }
 
+    if (
+      newStartAmt === "" ||
+      newMaxVotes === "" ||
+      candidates.some((candidate) => candidate === "")
+    ) {
+      setWarningMessage("Please enter all values");
+      setTimeout(() => setWarningMessage(""), 3000);
+      return;
+    }
+
     if (!isOwner) {
       setWarningMessage("Sorry, only the contract holder can do this");
+      setTimeout(() => setWarningMessage(""), 3000);
+      return;
+    }
+
+    // Adreslerin geçerli olup olmadığını kontrol edin
+    if (candidates.some((candidate) => !isValidAddress(candidate))) {
+      setWarningMessage(
+        "Please enter the correct Ethereum address and try again"
+      );
       setTimeout(() => setWarningMessage(""), 3000);
       return;
     }
@@ -149,7 +149,7 @@ export const ResetVote = (props) => {
       .catch((error) => {
         if (error.message.includes("User denied transaction signature")) {
           // Kullanıcının işlemi reddettiği durum için genel hata kodu
-          setWarningMessage("İşlemi iptal ettiniz");
+          setWarningMessage("You canceled the transaction");
         } else {
           console.error("An unexpected error occurred:", error);
         }
