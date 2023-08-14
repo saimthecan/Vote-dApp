@@ -164,6 +164,7 @@ export const Vote = (props) => {
   padding="2"
   alignItems="center"
   flexWrap={['wrap', 'nowrap']}
+  ml={[2.5,0]}
   
 >
   <Box
@@ -176,7 +177,8 @@ export const Vote = (props) => {
     </Text>
   </Box>
   <Button
-    ml="1rem"
+  mr={["0.5rem",0]}
+    ml={["0.5rem","1rem"]}
     colorScheme="blue"
     onClick={() => voteForCandidate(wallet)}
     size={isMobile ? "sm" : "md"} // Mobil görünümde buton boyutunu "sm" olarak ayarla
