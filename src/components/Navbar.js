@@ -215,10 +215,10 @@ export const Navbar = (props) => {
             />
           </Link></Box>
           <Box ml={isMobile ? 2 : 10}>
-          <Link as={RouterLink} to="/" mr={5}>
+          <Link as={RouterLink} to="/" mr={isMobile ? 2.5 : 5}>
             Home
           </Link>
-          <Link as={RouterLink} to="/vote" mr={5}>
+          <Link as={RouterLink} to="/vote" mr={isMobile ? 2.5 : 5}>
             Vote
           </Link>
           <Link as={RouterLink} to="/resetvote">
