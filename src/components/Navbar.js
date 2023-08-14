@@ -1,4 +1,6 @@
+
 import React, { useEffect } from "react";
+import { FaUser } from "react-icons/fa"; // User icon'unu içe aktarma
 import {
   Flex,
   Box,
@@ -9,9 +11,11 @@ import {
   MenuItem,
   MenuList,
   Image,
+  IconButton,
+  useBreakpointValue,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import { toast } from "react-toastify";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { connect } from "react-redux";
 import { connectWallet as connectWalletAction } from "../Redux/actions";
@@ -22,6 +26,7 @@ import contractAbi from "./contractAbi.json";
 export const Navbar = (props) => {
   const { connectWalletAction, wallet } = props;
   const [isConnected, setIsConnected] = React.useState(false);
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const web3 = new Web3(window.ethereum);
   const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
@@ -189,7 +194,6 @@ export const Navbar = (props) => {
   }, [connectWalletAction]);
 
   return (
-    // Eksik olan bu return ifadesini ekledim
     <Flex
       as="nav"
       align="center"
@@ -202,16 +206,15 @@ export const Navbar = (props) => {
     >
       <Flex align="center">
         <Box>
-          <Link as={RouterLink} to="/">
+         <Link as={RouterLink} to="/">
             <Image
               src="/logo.png" // Public klasörünüzün içindeki yolu
               alt="LOGO"
               width="50px"
               height="50px"
             />
-          </Link>
-        </Box>
-        <Box ml={10}>
+          </Link></Box>
+          <Box ml={isMobile ? 2 : 10}>
           <Link as={RouterLink} to="/" mr={5}>
             Home
           </Link>
@@ -226,62 +229,83 @@ export const Navbar = (props) => {
       <Box>
         {wallet ? (
           <>
-            <Button
-              variant="outline"
-              colorScheme="whiteAlpha"
-              color="white"
-              onClick={handleClaim}
-              mr={3}
-            >
-              Claim
-            </Button>
-            <Button
-              variant="outline"
-              colorScheme="whiteAlpha"
-              color="white"
-              onClick={handleRefund}
-              mr={3}
-            >
-              Refund
-            </Button>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                colorScheme="teal"
-                bg="teal.700"
-                variant="solid"
-                _hover={{ bg: "teal.700" }}
+            <Box display={isMobile ? "none" : "block"}>
+              {/* PC görünümünde gösterilen düğmeler */}
+              <Button
+                variant="outline"
+                colorScheme="whiteAlpha"
+                color="white"
+                onClick={handleClaim}
+                mr={3}
               >
-                {wallet.substring(0, 8) + "..."}
-              </MenuButton>
-              <MenuList bg="teal.500" border="none">
-                <MenuItem
-                  className="custom-menu-item"
-                  onClick={disconnectWallet}
-                  color="white"
-                  h="auto"
-                  p={2}
-                  m={0}
+                Claim
+              </Button>
+              <Button
+                variant="outline"
+                colorScheme="whiteAlpha"
+                color="white"
+                onClick={handleRefund}
+                mr={3}
+              >
+                Refund
+              </Button>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                  colorScheme="teal"
+                  bg="teal.700"
+                  variant="solid"
+                  _hover={{ bg: "teal.700" }}
                 >
-                  Disconnect
-                </MenuItem>
-              </MenuList>
-            </Menu>
+                  {wallet.substring(0, 8) + "..."}
+                </MenuButton>
+                <MenuList bg="teal.500" border="none">
+                  <MenuItem
+                    className="custom-menu-item"
+                    onClick={disconnectWallet}
+                    color="white"
+                    h="auto"
+                    p={2}
+                    m={0}
+                  >
+                    Disconnect
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Box>
+            <Box display={isMobile ? "block" : "none"}>
+              {/* Mobil görünümde gösterilen kullanıcı simgesi */}
+              <Menu>
+                <MenuButton as={IconButton} icon={<FaUser />} />
+                <MenuList bg="teal.500" border="none">
+                  <MenuItem bg="teal" onClick={handleClaim} color="white">
+                    Claim
+                  </MenuItem>
+                  <MenuItem bg="teal.500" onClick={handleRefund} color="white">
+                    Refund
+                  </MenuItem>
+                  <MenuItem bg="teal.400" onClick={disconnectWallet} color="white">
+                    Disconnect
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Box>
           </>
         ) : (
           <Button
-            colorScheme="teal"
-            bg="teal.700"
-            variant="solid"
-            onClick={handleConnectClick}
-          >
-            Connect
-          </Button>
+          colorScheme="teal"
+          bg="teal.700"
+          variant="solid"
+          onClick={handleConnectClick}
+          size={isMobile ? "sm" : "md"} // Mobil görünümde buton boyutunu "sm" olarak ayarla
+        >
+          Connect
+        </Button>
         )}
       </Box>
     </Flex>
-  ); // return ifadesinin sonu
+  );
 };
 
 const mapStateToProps = (state) => ({

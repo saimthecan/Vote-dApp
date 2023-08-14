@@ -37,7 +37,7 @@ export const Vote = (props) => {
   }, [dispatch]);
 
   const wallets = candidates; 
-  console.log(candidates);
+
 
   useEffect(() => {
     if (props.wallet) {
@@ -151,27 +151,36 @@ export const Vote = (props) => {
           </Heading>
           <VStack spacing="4">
             {wallets.map((wallet, index) => (
-              <Flex
-                key={index}
-                justifyContent="space-between"
-                px="2"
-                border="1px solid"
-                borderColor="gray.600" // Kenarlığın rengini daha koyu bir gri yaptım
-                borderRadius="md"
-                padding="2"
-                alignItems="center"
-              >
-                <Text flex="1" textAlign="left">
-                  {wallet}
-                </Text>
-                <Button
-                  ml="1rem"
-                  colorScheme="blue"
-                  onClick={() => voteForCandidate(wallet)}
-                >
-                  Vote
-                </Button>
-              </Flex>
+          // Yatay Kaydırma Sadece Küçük Ekranlar İçin
+<Flex
+  key={index}
+  justifyContent="space-between"
+  px="2"
+  border="1px solid"
+  borderColor="gray.600"
+  borderRadius="md"
+  padding="2"
+  alignItems="center"
+  flexWrap={['wrap', 'nowrap']}
+>
+  <Box
+    flex="1"
+    overflowX={['scroll', 'visible']} // Sadece küçük ekranlarda yatay kaydırmayı etkinleştirme
+    whiteSpace={['nowrap', 'normal']} // Sadece küçük ekranlarda satır sonlarına taşmamasını sağlama
+  >
+    <Text fontSize={['sm', 'md']} textAlign="left">
+      {wallet}
+    </Text>
+  </Box>
+  <Button
+    ml="1rem"
+    colorScheme="blue"
+    onClick={() => voteForCandidate(wallet)}
+  >
+    Vote
+  </Button>
+</Flex>
+
             ))}
           </VStack>
           {warningMessage && (
