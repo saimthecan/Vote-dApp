@@ -17,7 +17,6 @@ import { connect } from "react-redux";
 import { connectWallet as connectWalletAction } from "../Redux/actions";
 import "../App.css";
 import Web3 from "web3";
-import walletData from "./wallets.json";
 import contractAbi from "./contractAbi.json";
 
 export const Navbar = (props) => {
@@ -25,15 +24,15 @@ export const Navbar = (props) => {
   const [isConnected, setIsConnected] = React.useState(false);
 
   const web3 = new Web3(window.ethereum);
-  const contractAddress = "0xc10bcb6d2948963257fff713f64e7de8bd38a191";
+  const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
   const contract = new web3.eth.Contract(contractAbi, contractAddress);
-  const candidates = walletData.candidates;
 
   //CLAIM FUNCTIONS
   const handleClaim = async () => {
     try {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
+
       });
       const isVotingOver = await contract.methods.voteFinished().call();
 
@@ -44,23 +43,24 @@ export const Navbar = (props) => {
         return;
       }
 
-      let winnerAddress = "";
-      let maxVotes = 0;
-      for (const candidate of candidates) {
-        const candidateVotes = await contract.methods.votes(candidate).call();
-        if (candidateVotes >= maxVotes) {
-          maxVotes = candidateVotes;
-          winnerAddress = candidate;
-        }
+      let candidatesFromContract = await contract.methods.getCandidates().call(); // Sözleşmeden adayları alın
+    let winnerAddress = "";
+    let maxVotes = 0;
+    for (const candidate of candidatesFromContract) {
+      const candidateVotes = await contract.methods.votes(candidate).call();
+      if (candidateVotes >= maxVotes) {
+        maxVotes = candidateVotes;
+        winnerAddress = candidate;
+      }
       }
 
       // Kullanıcının bu adres olup olmadığını kontrol edin
-      if (props.wallet.toLowerCase() !== winnerAddress.toLowerCase()) {
-        toast.error("I'm sorry you didn't win the vote, you can't claim.", {
-          position: "top-right",
-        });
-        return;
-      }
+       if (props.wallet.toLowerCase() !== winnerAddress.toLowerCase()) {
+      toast.error("I'm sorry you didn't win the vote, you can't claim.", {
+        position: "top-right",
+      });
+      return;
+    }
 
       await contract.methods.claim().send({ from: accounts[0] });
       toast.success("Claim successful!", {

@@ -17,6 +17,7 @@ import contractAbi from "./contractAbi.json";
 import { connect } from "react-redux";
 import { useCallback } from "react";
 
+
 export const ResetVote = (props) => {
   const [isOwner, setIsOwner] = useState(false);
   const [newStartAmt, setNewStartAmt] = useState("");
@@ -24,7 +25,7 @@ export const ResetVote = (props) => {
   const [candidates, setCandidates] = useState([""]);
   const [warningMessage, setWarningMessage] = React.useState("");
   const [votingOver, setVotingOver] = React.useState(false);
-  const contractAddress = "0xc10bcb6d2948963257fff713f64e7de8bd38a191";
+  const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
   const web3 = new Web3(window.ethereum);
   const isValidAddress = useCallback(
     (address) => web3.utils.isAddress(address),

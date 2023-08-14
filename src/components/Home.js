@@ -163,6 +163,9 @@ export const Home = () => {
               <DescriptionText>
                 Only the contract owner can perform Reset Vote.
               </DescriptionText>
+              <DescriptionText>
+              The candidates on the vote page will automatically change when the vote is successfully reset.
+              </DescriptionText>
             </Collapse>
           </Box>
         </Flex>

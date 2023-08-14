@@ -14,16 +14,30 @@ import {
 import Web3 from "web3";
 import contractAbi from "./contractAbi.json";
 import { connect } from "react-redux";
-import walletData from "./wallets.json";
 
 export const Vote = (props) => {
+  const { dispatch, candidates } = props;
   const [voteSuccess, setVoteSuccess] = React.useState(false);
   const [votingOver, setVotingOver] = React.useState(false);
   const [selfVote, setSelfVote] = React.useState(false);
   const [alreadyVoted, setAlreadyVoted] = React.useState(false);
   const [warningMessage, setWarningMessage] = React.useState("");
-  const wallets = walletData.candidates;
-  const contractAddress = "0xc10bcb6d2948963257fff713f64e7de8bd38a191";
+  
+  const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
+
+  useEffect(() => {
+    async function getCandidates() {
+      const web3 = new Web3(window.ethereum);
+      const contract = new web3.eth.Contract(contractAbi, contractAddress);
+      const candidatesArray = await contract.methods.getCandidates().call();
+      dispatch({ type: 'SET_CANDIDATES', payload: candidatesArray });
+    }
+    getCandidates();
+    
+  }, [dispatch]);
+
+  const wallets = candidates; 
+  console.log(candidates);
 
   useEffect(() => {
     if (props.wallet) {
@@ -220,9 +234,9 @@ export const Vote = (props) => {
   );
 };
 
-// Durumu bu bileşenle bağlayın
 const mapStateToProps = (state) => ({
-  wallet: state.wallet.account, // Burada cüzdanın depolandığı yeri belirtin
+  wallet: state.wallet.account,
+  candidates: state.wallet.candidates, // Bu bileşende kullanmak üzere candidates bilgisini de alın
 });
 
 export default connect(mapStateToProps)(Vote);
