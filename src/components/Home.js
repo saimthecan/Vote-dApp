@@ -11,12 +11,11 @@ export const Home = () => {
   const [showWhydApp, setShowWhydApp] = useState(false);
 
   const DescriptionText = (props) => (
-    <Text
-      style={{ textIndent: "-20px", paddingLeft: "3rem", paddingTop: "1rem" }}
-    >
-      • {props.children}
+    <Text paddingLeft={"3rem"} paddingTop={"1rem"} style={{ textIndent: "-1rem" }}>
+      •&nbsp; {props.children}
     </Text>
   );
+  
 
   return (
     <Box
@@ -48,7 +47,7 @@ export const Home = () => {
             </Button>
             <Collapse in={showWhydApp} mt={3}>
               <DescriptionText>
-                Votes are protected by the decentralization of the blockchain,
+                 Votes are protected by the decentralization of the blockchain,
                 cannot be changed, and cannot be interfered with from outside.
               </DescriptionText>
             </Collapse>
@@ -74,6 +73,9 @@ export const Home = () => {
               <DescriptionText>
                 The contract owner determines the reward amount and it is in
                 ether.
+              </DescriptionText>
+               <DescriptionText>
+               You need to be connected to the goerli test network to fully use the app.
               </DescriptionText>
             </Collapse>
           </Box>
