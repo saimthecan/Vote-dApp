@@ -10,6 +10,7 @@ import {
   Alert,
   AlertIcon,
   AlertDescription,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import Web3 from "web3";
 import contractAbi from "./contractAbi.json";
@@ -22,6 +23,7 @@ export const Vote = (props) => {
   const [selfVote, setSelfVote] = React.useState(false);
   const [alreadyVoted, setAlreadyVoted] = React.useState(false);
   const [warningMessage, setWarningMessage] = React.useState("");
+  const isMobile = useBreakpointValue({ base: true, md: false });
   
   const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
 
@@ -156,12 +158,13 @@ export const Vote = (props) => {
   key={index}
   justifyContent="space-between"
   px="2"
-  border="1px solid"
+  border={[0, "1px solid"]} 
   borderColor="gray.600"
   borderRadius="md"
   padding="2"
   alignItems="center"
   flexWrap={['wrap', 'nowrap']}
+  
 >
   <Box
     flex="1"
@@ -176,6 +179,7 @@ export const Vote = (props) => {
     ml="1rem"
     colorScheme="blue"
     onClick={() => voteForCandidate(wallet)}
+    size={isMobile ? "sm" : "md"} // Mobil görünümde buton boyutunu "sm" olarak ayarla
   >
     Vote
   </Button>
