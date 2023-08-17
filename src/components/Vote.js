@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   Box,
   Container,
@@ -24,22 +24,53 @@ export const Vote = (props) => {
   const [alreadyVoted, setAlreadyVoted] = React.useState(false);
   const [warningMessage, setWarningMessage] = React.useState("");
   const isMobile = useBreakpointValue({ base: true, md: false });
-  
+  const [isGoerli, setIsGoerli] = React.useState(false);
+
   const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
 
-  useEffect(() => {
-    async function getCandidates() {
+  const getCandidates = useCallback(async () => {
+    if (isGoerli) {
       const web3 = new Web3(window.ethereum);
       const contract = new web3.eth.Contract(contractAbi, contractAddress);
       const candidatesArray = await contract.methods.getCandidates().call();
-      dispatch({ type: 'SET_CANDIDATES', payload: candidatesArray });
+      dispatch({ type: "SET_CANDIDATES", payload: candidatesArray });
     }
+  }, [dispatch, isGoerli]);
+
+  const updateNetworkAndFetchCandidates = useCallback(async () => {
+    if (window.ethereum) {
+      const web3 = new Web3(window.ethereum);
+      const chainId = await web3.eth.getChainId();
+      if (chainId.toString() === "5") {
+        setIsGoerli(true);
+        const contract = new web3.eth.Contract(contractAbi, contractAddress);
+        const candidatesArray = await contract.methods.getCandidates().call();
+        dispatch({ type: "SET_CANDIDATES", payload: candidatesArray });
+      } else {
+        setIsGoerli(false);
+        dispatch({ type: "SET_CANDIDATES", payload: [] });
+      }
+    }
+  }, [dispatch, contractAddress]);
+
+  useEffect(() => {
+    updateNetworkAndFetchCandidates(); // İlk yüklenme anında çalıştır
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", updateNetworkAndFetchCandidates);
+      return () => {
+        window.ethereum.removeListener(
+          "chainChanged",
+          updateNetworkAndFetchCandidates
+        );
+      };
+    }
+  }, [updateNetworkAndFetchCandidates]);
+
+  useEffect(() => {
     getCandidates();
-    
-  }, [dispatch]);
+  }, [isGoerli, dispatch, getCandidates]); // added getCandidates to dependency array
 
-  const wallets = candidates; 
-
+  const wallets = candidates;
 
   useEffect(() => {
     if (props.wallet) {
@@ -152,42 +183,53 @@ export const Vote = (props) => {
             Vote dApp
           </Heading>
           <VStack spacing="4">
-            {wallets.map((wallet, index) => (
-          // Yatay Kaydırma Sadece Küçük Ekranlar İçin
-<Flex
-  key={index}
-  justifyContent="space-between"
-  px="2"
-  border={[0, "1px solid"]} 
-  borderColor="gray.600"
-  borderRadius="md"
-  padding="2"
-  alignItems="center"
-  flexWrap={['wrap', 'nowrap']}
-  ml={[2.5,0]}
-  
->
-  <Box
-    flex="1"
-    overflowX={['scroll', 'visible']} // Sadece küçük ekranlarda yatay kaydırmayı etkinleştirme
-    whiteSpace={['nowrap', 'normal']} // Sadece küçük ekranlarda satır sonlarına taşmamasını sağlama
-  >
-    <Text fontSize={['sm', 'md']} textAlign="left">
-      {wallet}
-    </Text>
-  </Box>
-  <Button
-  mr={["0.5rem",0]}
-    ml={["0.5rem","1rem"]}
-    colorScheme="blue"
-    onClick={() => voteForCandidate(wallet)}
-    size={isMobile ? "sm" : "md"} // Mobil görünümde buton boyutunu "sm" olarak ayarla
-  >
-    Vote
-  </Button>
-</Flex>
-
-            ))}
+            {isGoerli ? (
+              wallets.map((wallet, index) => (
+                <Flex
+                  key={index}
+                  justifyContent="space-between"
+                  px="2"
+                  border={[0, "1px solid"]}
+                  borderColor="gray.600"
+                  borderRadius="md"
+                  padding="2"
+                  alignItems="center"
+                  flexWrap={["wrap", "nowrap"]}
+                  ml={[2.5, 0]}
+                >
+                  <Box
+                    flex="1"
+                    overflowX={["scroll", "visible"]}
+                    whiteSpace={["nowrap", "normal"]}
+                  >
+                    <Text fontSize={["sm", "md"]} textAlign="left">
+                      {wallet}
+                    </Text>
+                  </Box>
+                  <Button
+                    mr={["0.5rem", 0]}
+                    ml={["0.5rem", "1rem"]}
+                    colorScheme="blue"
+                    onClick={() => voteForCandidate(wallet)}
+                    size={isMobile ? "sm" : "md"}
+                  >
+                    Vote
+                  </Button>
+                </Flex>
+              ))
+            ) : (
+              <Alert
+                status="warning"
+                borderRadius="md"
+                mt={4}
+                borderColor="yellow.200"
+                borderWidth="1px"
+              >
+                <AlertDescription color="black">
+                  Please connect to the Goerli test network
+                </AlertDescription>
+              </Alert>
+            )}
           </VStack>
           {warningMessage && (
             <Alert
@@ -203,7 +245,6 @@ export const Vote = (props) => {
               </AlertDescription>
             </Alert>
           )}
-          {/* ... existing code ... */}
           {voteSuccess && (
             <Alert
               status="success"
@@ -248,7 +289,6 @@ export const Vote = (props) => {
     </Box>
   );
 };
-
 const mapStateToProps = (state) => ({
   wallet: state.wallet.account,
   candidates: state.wallet.candidates, // Bu bileşende kullanmak üzere candidates bilgisini de alın
