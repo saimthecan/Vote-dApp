@@ -121,9 +121,20 @@ export const Navbar = (props) => {
       console.error("Refund işlemi başarısız", error);
     }
   };
-
+  const switchToGoerliNetwork = async () => {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }], // Goerli test ağının chainId'si 0x5'tir.
+      });
+    } catch (switchError) {
+      console.error('Ağ değiştirilirken bir hata oluştu.', switchError);
+    }
+  };
+  
   //CONNECT WALLET FUNCTION
   const connectWallet = async () => {
+    await switchToGoerliNetwork();
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
