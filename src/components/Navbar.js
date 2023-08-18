@@ -29,7 +29,7 @@ export const Navbar = (props) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const web3 = new Web3(window.ethereum);
-  const contractAddress = "0xf98d5e0e0cc00a3f01b580834c4d36d780f1df5d";
+  const contractAddress = "0xc31a47dd10c2d6b5700941d5f145ef0adc27dbd6";
   const contract = new web3.eth.Contract(contractAbi, contractAddress);
 
   //CLAIM FUNCTIONS
