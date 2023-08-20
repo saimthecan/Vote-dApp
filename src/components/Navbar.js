@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa"; // User icon'unu içe aktarma
 import {
   Flex,
@@ -25,7 +25,7 @@ import contractAbi from "./contractAbi.json";
 
 export const Navbar = (props) => {
   const { connectWalletAction, wallet } = props;
-  const [isConnected, setIsConnected] = React.useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const web3 = new Web3(window.ethereum);
