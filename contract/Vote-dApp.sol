@@ -133,4 +133,9 @@ contract Vote {
     return owner;
 }
 
+function getCandidates() public view returns (address[] memory) {
+    return candidates;
+}
+
+
 }
