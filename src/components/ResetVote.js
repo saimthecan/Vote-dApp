@@ -25,7 +25,7 @@ export const ResetVote = (props) => {
   const [candidates, setCandidates] = useState([""]);
   const [warningMessage, setWarningMessage] = React.useState("");
   const [votingOver, setVotingOver] = React.useState(false);
-  const contractAddress = "0xc31a47dd10c2d6b5700941d5f145ef0adc27dbd6";
+  const contractAddress = "0xa24ac940da10d61d1aa4bdb667a8dbc779ba57b2";
   const web3 = new Web3(window.ethereum);
   const isValidAddress = useCallback(
     (address) => web3.utils.isAddress(address),
