@@ -75,7 +75,7 @@ export const Home = () => {
                 ether.
               </DescriptionText>
                <DescriptionText>
-               You need to be connected to the goerli test network to fully use the app.
+               You need to be connected to the sepolia test network to fully use the app.
               </DescriptionText>
             </Collapse>
           </Box>
