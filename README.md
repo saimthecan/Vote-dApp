@@ -6,4 +6,4 @@ To fully use this application, please ensure the following:
 
 2. **Sepolia Test Network**: The application uses the Sepolia test network. Make sure your Metamask is connected to the Sepolia test network.
 
-   
+   ![Example Image](https://github.com/saimthecan/Vote-dApp/edit/master/readmePic/vote1.png)
